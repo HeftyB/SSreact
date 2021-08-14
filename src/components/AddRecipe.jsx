@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import axios from "axios";
 
 // default state objects
 const initialRecipe = {
@@ -19,12 +20,17 @@ const initialIngredient = {
     qty: ""
 }
 
-export default function AddRecipe(props) {
+export default function AddRecipe() {
 
-    // component state slices
+    // slices of component state
     const [recipe, setRecipe] = useState(initialRecipe);
     const [ingredient, setIngredient] = useState(initialIngredient);
     const [step, setStep] = useState(initialStep);
+    const [error, setError] = useState({
+        qty: false,
+        ingredient: false,
+        instruction: false
+    });
 
     // input handler for recipe state
     const handler = e => {
@@ -44,12 +50,32 @@ export default function AddRecipe(props) {
 
     // add current ingredient state to recipe.ingredients
     const ingredientAdder = e => {
+        let q = ingredient.qty.length === 0;
+        let i = ingredient.ingredient.length === 0;
+
+        if (q || i) {
+            setError({
+                ...error,
+                qty: q,
+                ingredient: i
+            });
+
+            return
+        }
+
         setRecipe({
             ...recipe,
             ingredients: [...recipe.ingredients, ingredient]
         });
 
         setIngredient(initialIngredient);
+        if (error.qty || error.ingredient) {
+            setError({
+                ...error,
+                qty: false,
+                ingredient: false
+            });
+        }
     };
 
     // input handler for step state
@@ -62,12 +88,27 @@ export default function AddRecipe(props) {
 
     // add current step state to ingredient.steps
     const stepAdder = e => {
+        if (step.step.length === 0) {
+            setError({
+                ...error,
+                instruction: true
+            });
+            return
+        }
+
         setRecipe({
             ...recipe,
             steps: [...recipe.steps, step]
         });
 
         setStep(initialStep);
+
+        if (error.instruction) {
+            setError({
+                ...error,
+                instruction: false
+            });
+        }
     };
 
     // remove ingredient from recipe.ingredients
@@ -81,7 +122,7 @@ export default function AddRecipe(props) {
         });
     };
 
-    // remove step from recpie.steps
+    // remove step from recipe.steps
     const delStep = index => {
         let x = [...recipe.steps];
 
@@ -109,6 +150,30 @@ export default function AddRecipe(props) {
             steps: x
         })
     };
+
+    const submitRecipe = e => {
+        let s = recipe.steps.map((step, index) => {
+            return {
+                ...step,
+                step_num: index + 1
+            }
+        })
+
+        let r = {
+            ...recipe,
+            steps: s,
+            tags: []
+        }
+
+        axios.post("http://192.168.1.125:2021/recipes", r)
+            .then(data => {
+                console.log(data);
+                debugger
+            })
+            .catch(e => {
+                debugger
+            })
+    }
 
     return (
         <div className="bg-color4 w-10/12 mx-auto h-full">
@@ -165,11 +230,17 @@ export default function AddRecipe(props) {
                             </div>
                         </div>
                         <div className="border border-black my-2">
-                            <input className="w-1/5 text-center border-black border-r" type="text" id="qty" name="qty"
-                                   placeholder="QTY" value={ingredient.qty} onChange={ingredientHandler}/>
-                            <input className="w-4/5 text-center" type="text" id="ingredient" name="ingredient"
-                                   placeholder="INGREDIENT" value={ingredient.ingredient} onChange={ingredientHandler}/>
+                            <input
+                                className={error.qty ? "w-1/5 text-center border-red-600 border-2" : "w-1/5 text-center border-black border-r"}
+                                type="text" id="qty" name="qty"
+                                placeholder="QTY" value={ingredient.qty} onChange={ingredientHandler}/>
+                            <input
+                                className={error.ingredient ? "w-4/5 text-center border-red-600 border-2" : "w-4/5 text-center"}
+                                type="text" id="ingredient" name="ingredient"
+                                placeholder="INGREDIENT" value={ingredient.ingredient} onChange={ingredientHandler}/>
                         </div>
+                        <p className={error.qty || error.ingredient ? "text-red-600 text-center text-sm italic mb-2" : "hidden"}>***
+                            QTY & INGREDIENT are required! ***</p>
                         <div className="text-center mx-auto bg-red-600 text-xl cursor-pointer"
                              onClick={ingredientAdder}>Add Ingredient
                         </div>
@@ -192,7 +263,7 @@ export default function AddRecipe(props) {
                                     <div className="w-20 border-black boarder-l text-lg">ORDER</div>
                                 </div>
 
-                                /* list steps in recipe.steps */}
+                                {/* list steps in recipe.steps */}
                                 {recipe.steps.map((s, index) => {
                                     return (
                                         <div className="flex text-center border-t border-b border-black py-2"
@@ -218,6 +289,8 @@ export default function AddRecipe(props) {
                             <textarea className="text-center w-full" id="step" name="step"
                                       placeholder="STEP INSTRUCTION" value={step.step} onChange={stepHandler}/>
                         </form>
+                        <p className={error.instruction ? "text-red-600 text-center text-sm italic mb-2" : "hidden"}>***
+                            INSTRUCTION is required! ***</p>
                         <div className="text-center mx-auto bg-red-600 text-xl cursor-pointer" onClick={stepAdder}>Add
                             Step
                         </div>
@@ -225,8 +298,9 @@ export default function AddRecipe(props) {
                 </section>
 
                 <div
-                    className="bg-green-400 border-black border-dotted text-xl text-center font-bold cursor-pointer">SUBMIT
-                    RECIPE
+                    className="bg-green-400 border-black border-dotted text-xl text-center font-bold cursor-pointer"
+                    onClick={submitRecipe}>
+                    SUBMIT RECIPE
                 </div>
             </div>
         </div>
