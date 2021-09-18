@@ -1,12 +1,12 @@
-import { Route, Switch, Link } from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 import Welcome from './components/welcome/Welcome';
-import Home from './components/home/Home';
 import './App.css';
-import AddRecipe from "./components/AddRecipe";
+import AddRecipe from "./components/addRecipe/AddRecipe";
+import Home from "./components/home/Home";
 
-function App() {
+function App () {
   return (
-    <div className="App bg-color1 h-screen">
+    <div className="App bg-color1 min-h-screen">
       <Switch>
         <Route exact path={'/'}>
           <Welcome/>
@@ -15,7 +15,7 @@ function App() {
           <Home/>
         </Route>
         <Route path={'/addRecipe'}>
-          <AddRecipe />
+          <AddRecipe/>
         </Route>
       </Switch>
     </div>
