@@ -45,16 +45,16 @@ export default function RecipeTag ({tags, active, setActive, error}) {
           <div className="text-center border-b border-black grid gtc gap-2">
 
             {recipeTags.map((tag, index) => {
-            return (
-              <div key={index}
-                   className="w-28 p-2 border-2 border-blue-600 rounded-3xl bg-red-200 text-xs font-bold flex justify-around">
-                <span className="w-11 truncate">{tag.tag}</span>
-                <button className="border border-red-600 rounded-full text-red-600"
-                        onClick={e => removeTag(index)}>X
-                </button>
-              </div>
-            );
-          })}
+              return (
+                <div key={index}
+                     className="w-28 p-2 border-2 border-blue-600 rounded-3xl bg-red-200 text-xs font-bold flex justify-around">
+                  <span className="w-11 truncate">{tag.tag}</span>
+                  <button className="border border-red-600 rounded-full text-red-600"
+                          onClick={e => removeTag(index)}>X
+                  </button>
+                </div>
+              );
+            })}
 
           </div>
           <select className="w-full text-center" id="recipeTagDD" value={recipeTagdd} onChange={addTag}>

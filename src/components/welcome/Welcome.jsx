@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 export default function Welcome () {
   return (
@@ -13,7 +14,9 @@ export default function Welcome () {
           </p>
         </div>
         <div className="w-8/12 mx-auto text-center bg-color3">
-          <div className="p-8 font-bold text-2xl">Welcome!!!!!!!!!!!!!!!</div>
+          <Link to={"/home"}>
+            <div className="p-8 font-bold text-2xl">Welcome!!!!!!!!!!!!!!!</div>
+          </Link>
         </div>
       </div>
     </div>
