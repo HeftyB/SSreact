@@ -10,6 +10,12 @@ const initialRecipe = {
   title: "",
   description: "",
   url: "",
+  imgUrl: "",
+  totalTime: "",
+  prepTime: "",
+  cookTime: "",
+  yields: "",
+  feeds: "",
   ingredients: [],
   steps: [],
   tags: []
@@ -29,6 +35,7 @@ export default function AddRecipe () {
   // Component state slices
   const [recipe, setRecipe] = useState(initialRecipe);
   const [tags, setTags] = useState([]);
+  const [recipeTags, setRecipeTags] = useState([]);
   const [active, setActive] = useState(false);
   const [error, setError] = useState(inError);
 
@@ -70,7 +77,7 @@ export default function AddRecipe () {
     let r = {
       ...recipe,
       steps: s,
-      tags: []
+      tags: recipeTags
     };
 
     axios.post(`${process.env.REACT_APP_DOCKS}/recipes`, r)
@@ -154,9 +161,49 @@ export default function AddRecipe () {
             <label htmlFor="url" className="w-2/5 text-lg font-bold">Recipe URL: </label>
             <input type="text" id="url" name="url" value={recipe.url} onChange={handler} className="w-3/5"/>
           </div>
+
+
+
+
+
+          <div className="flex justify-around p-4">
+            <label htmlFor="imgUrl" className="w-2/5 text-lg font-bold"> Recipe Photo: </label>
+            <input type="text" id="imgUrl" name="imgUrl" value={recipe.imgUrl} onChange={handler} className="w-3/5"/>
+          </div>
+          <div className="flex justify-around p-4">
+            <div className="flex justify-around p-4">
+              <label htmlFor="cookTime" className="w-2/5 text-lg font-bold">Cook Time: </label>
+              <input type="text" id="cookTime" name="cookTime" value={recipe.cookTime} onChange={handler} className="w-3/5"/>
+            </div>
+            <div className="flex justify-around p-4">
+              <label htmlFor="prepTime" className="w-2/5 text-lg font-bold">Prep Time: </label>
+              <input type="text" id="prepTime" name="prepTime" value={recipe.prepTime} onChange={handler} className="w-3/5"/>
+            </div>
+          </div>
+          <div className="flex justify-around p-4">
+            <label htmlFor="totalTime" className="w-2/5 text-lg font-bold">Total Time: </label>
+            <input type="text" id="totalTime" name="totalTime" value={recipe.totalTime} onChange={handler} className="w-3/5"/>
+          </div>
+          <div className="flex justify-around p-4">
+            <div className="flex justify-around p-4">
+              <label htmlFor="yields" className="w-2/5 text-lg font-bold">Yields: </label>
+              <input type="text" id="yields" name="yields" value={recipe.yields} onChange={handler} className="w-3/5"/>
+            </div>
+            <div className="flex justify-around p-4">
+              <label htmlFor="feeds" className="w-2/5 text-lg font-bold">Feeds: </label>
+              <input type="text" id="feeds" name="feeds" value={recipe.feeds} onChange={handler} className="w-3/5"/>
+            </div>
+
+          </div>
+
+
+
+
+
+
         </section>
-        <RecipeTag tags={tags} active={active} setActive={setActive} error={error}/>
-        <Ingredient recipe={recipe} error={error} setError={setError}/>
+        <RecipeTag tags={tags} recipeTags={recipeTags} setRecipeTags={setRecipeTags} active={active} setActive={setActive} error={error}/>
+        <Ingredient recipe={recipe} setRecipe={setRecipe} error={error} setError={setError}/>
         <hr/>
         <hr/>
         <Step recipe={recipe} setRecipe={setRecipe} error={error} setError={setError}/>

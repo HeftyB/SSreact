@@ -1,9 +1,8 @@
 import React, {useState} from "react";
 
-export default function RecipeTag ({tags, active, setActive, error}) {
+export default function RecipeTag ({tags, recipeTags, setRecipeTags, active, setActive, error}) {
 
   // Component state slices
-  const [recipeTags, setRecipeTags] = useState([]);
   const [recipeTagdd, setrecipeTagdd] = useState({value: "-0"});
 
   // Adds dropdown tag to recipeTags
